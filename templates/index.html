@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MED ALERT</title>
+</head>
+<body>
+    <h1>Select Patient ID</h1>
+    <form id="patient_form">
+        <select id="patient_id">
+            {% for patient_id in patient_ids %}
+            <option value="{{ patient_id }}">{{ patient_id }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <h2>Bio Vitals</h2>
+    <button onclick="getBioVitals()">View Bio Vitals</button>
+    <div id="bio_vitals"></div>
+    <h2>Lifestyle Parameters</h2>
+    <button onclick="getLifestyleParams()">View Lifestyle Parameters</button>
+    <div id="lifestyle_params"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function getBioVitals() {
+            var patient_id = $('#patient_id').val();
+           $.post('/get_bio_vitals', { patient_id: patient_id }, function(data) {
+                $('#bio_vitals').empty();
+                for (var i = 0; i < data.length; i++) {
+                    var bio_vital = data[i];
+                    $('#bio_vitals').append('<p>Heart rate: ' + bio_vital.Heart_Rate + '</p>');
+                    $('#bio_vitals').append('<p>Body temperature: ' + bio_vital.Body_Temperature + '</p>');
+                    $('#bio_vitals').append('<p>O2: ' + bio_vital.O2_Saturation_in_Blood + '</p>');
+                    $('#bio_vitals').append('<p>Diastolic bp: ' + bio_vital.Diastolic_BP + '</p>');
+                    $('#bio_vitals').append('<p>Systolic bp: ' + bio_vital.Systolic_BP + '</p>');
+                    $('#bio_vitals').append('<p>Respiratory rate: ' + bio_vital.Respiratory_Rate + '</p>');
+                }
+            });
+        }
+
+        function getLifestyleParams() {
+            var patient_id = $('#patient_id').val();
+            $.post('/get_lifestyle_params', { patient_id: patient_id }, function(data) {
+                $('#lifestyle_params').empty();
+                for (var i = 0; i < data.length; i++) {
+                    var lifestyle_param = data[i];
+                    $('#lifestyle_params').append('<p>Sugar: ' + lifestyle_param.sugar_fast + '</p>');
+                    $('#lifestyle_params').append('<p>Sugar normal: ' + lifestyle_param.sugar_normal + '</p>');
+                    $('#lifestyle_params').append('<p>Sugar meal: ' + lifestyle_param.sugar_after_meal + '</p>');
+                    $('#lifestyle_params').append('<p>Cholestrol: ' + lifestyle_param.cholestrol + '</p>');
+                    $('#lifestyle_params').append('<p>Sleep: ' + lifestyle_param.sleep + '</p>');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
